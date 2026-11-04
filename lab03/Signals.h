@@ -37,7 +37,7 @@
 //To do: 01
 //*********
 #define USER_EVENTS						1000
-#define MYEVENT_CLOSE					(USER_EVENTS + 1) //extra: eveniment definit de programator pentru inchiderea aplicatiei
+#define MYEVENT_CLOSE					(USER_EVENTS + 1) /// eveniment definit de programator pentru inchiderea aplicatiei
 		
 //==============================================================================
 // Types

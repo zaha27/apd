@@ -61,12 +61,12 @@ int ProcessComInBuffer( char *comBuffer, int comBufferLength )
 	
 	static int iCh[3];
 	
-	//char pack[20]; //extra: scos - ascundea bufferul static 'pack' si se pierdea pachetul cand venea rupt in doua citiri
+	//char pack[20]; /// scos - ascundea bufferul static 'pack' si se pierdea pachetul cand venea rupt in doua citiri
 	char DateCanal[4] = {0, 0, 0, 0} ;
 	DateCanal[3] = '\0';
 	int indexDate = 0;
 	int chCurent = 0;
-	double bandpass_output = 0.0, derivative_output = 0.0, squared_output = 0.0, integrated_output = 0.0; //extra: iesirile etapelor Pan-Tompkins
+	double bandpass_output = 0.0, derivative_output = 0.0, squared_output = 0.0, integrated_output = 0.0; /// iesirile etapelor Pan-Tompkins
 	
 	for( i = 0; i < comBufferLength; i++ )
 	{
@@ -76,7 +76,7 @@ int ProcessComInBuffer( char *comBuffer, int comBufferLength )
 				
 				//...
 				
-				if (comBuffer[i] == PACK_BEGING) //extra: am gasit inceputul unui pachet '<'
+				if (comBuffer[i] == PACK_BEGING) /// am gasit inceputul unui pachet '<'
 				{
 					packIndex = 0;
 					automateState = AUTOMAT_PACK_DATA;
@@ -86,12 +86,12 @@ int ProcessComInBuffer( char *comBuffer, int comBufferLength )
 			case AUTOMAT_PACK_DATA:
 				
 				//...
-				if (comBuffer[i] == PACK_END) //extra: am gasit sfarsitul pachetului '>' (poate veni intr-o citire ulterioara, starea se pastreaza intre apeluri)
+				if (comBuffer[i] == PACK_END) /// am gasit sfarsitul pachetului '>' (poate veni intr-o citire ulterioara, starea se pastreaza intre apeluri)
 				{
 					pack[packIndex] = '\0';
 					automateState = AUTOMAT_PACK_START;
 					
-					if (sscanf(pack, "%d %d %d", &iCh[0], &iCh[1], &iCh[2]) != 3) //extra: extrag cele 3 valori; verific ca s-au citit toate
+					if (sscanf(pack, "%d %d %d", &iCh[0], &iCh[1], &iCh[2]) != 3) /// extrag cele 3 valori; verific ca s-au citit toate
 					{
 						break;
 					}
@@ -103,7 +103,7 @@ int ProcessComInBuffer( char *comBuffer, int comBufferLength )
 					// To do 1: Conversia Datelor
     
 					// Conversia valorilor de tip integer extrase din serial in valori de tip double
-					ecg_sample = (double)iCh[2] / 1024.0; //extra: canalul D3 impartit la rezolutia convertorului (1024 de valori)
+					ecg_sample = (double)iCh[2] / 1024.0; /// canalul D3 impartit la rezolutia convertorului (1024 de valori)
 	
 				    /* Initializarea parametrilor pentru functia de analiza a semnalului ECG */
 				    if (!ecg_initialized) {
@@ -118,15 +118,15 @@ int ProcessComInBuffer( char *comBuffer, int comBufferLength )
 					/* Procesul de analiza a semnalului ECG pentru a se extrage complexul QRS */
 					
 				    // Filtru trece banda cu frecventele de taiere intre 5 si 15 Hz
-				    bandpass_output = real_time_bandpass_filter(ecg_sample); //extra: pastrez doar banda 5-15 Hz (scot linia de baza si zgomotul)
+				    bandpass_output = real_time_bandpass_filter(ecg_sample); /// pastrez doar banda 5-15 Hz (scot linia de baza si zgomotul)
 					// Derivata semnalului filtrat
-				    derivative_output = real_time_derivative(bandpass_output, ecg_sample_counter); //extra: panta semnalului, maxima in complexul QRS
+				    derivative_output = real_time_derivative(bandpass_output, ecg_sample_counter); /// panta semnalului, maxima in complexul QRS
 					// Patratul derivatei
-				    squared_output = derivative_output * derivative_output; //extra: valori pozitive si varfurile QRS amplificate
+				    squared_output = derivative_output * derivative_output; /// valori pozitive si varfurile QRS amplificate
 					// Valoarea mediei mobile a semnalului ridicat la patrat, utilizat pentru detectarea varfurilor undelor R
-				    integrated_output = real_time_moving_average(squared_output, ecg_sample_counter); //extra: integrare pe fereastra de 20 de esantioane (energia QRS)
+				    integrated_output = real_time_moving_average(squared_output, ecg_sample_counter); /// integrare pe fereastra de 20 de esantioane (energia QRS)
 					// Detectarea valorii maxime din compelxul QRS si calcului frecventei cardiace
-					heart_rate = real_time_peak_detection(integrated_output, bandpass_output, ecg_sample, ecg_sample_counter); //extra: praguri adaptive; intoarce BPM cand gaseste o unda R, altfel 0
+					heart_rate = real_time_peak_detection(integrated_output, bandpass_output, ecg_sample, ecg_sample_counter); /// praguri adaptive; intoarce BPM cand gaseste o unda R, altfel 0
 					
 					// Salvarea datelor pe Strip Chart si Display
 					
@@ -135,20 +135,20 @@ int ProcessComInBuffer( char *comBuffer, int comBufferLength )
 						//To do 3: Afisarea ritmului cardiac
 						
 						// Afisarea grafica a variatiei frecventei cardiace
-						PlotStripChartPoint( mainPanel, MAIN_PANEL_IDC_DISP_HRV_3, heart_rate ); //extra: adaug valoarea BPM pe stripchart-ul de variabilitate
+						PlotStripChartPoint( mainPanel, MAIN_PANEL_IDC_DISP_HRV_3, heart_rate ); /// adaug valoarea BPM pe stripchart-ul de variabilitate
 						// Afisarea valorii frecventei cardiace
-						SetCtrlVal( mainPanel, MAIN_PANEL_NUMERIC_3, heart_rate ); //extra: afisez numeric frecventa cardiaca
+						SetCtrlVal( mainPanel, MAIN_PANEL_NUMERIC_3, heart_rate ); /// afisez numeric frecventa cardiaca
 					}
 				}
-				else if (comBuffer[i] == PACK_BEGING) //extra: a aparut '<' inainte de '>' (pachet stricat)
+				else if (comBuffer[i] == PACK_BEGING) /// a aparut '<' inainte de '>' (pachet stricat)
 				{
 					packIndex = 0;
 				}
-				else if (packIndex < sizeof(pack) - 1) //extra: caracter din interiorul pachetului si mai e loc in buffer
+				else if (packIndex < sizeof(pack) - 1) /// caracter din interiorul pachetului si mai e loc in buffer
 				{
 					pack[packIndex++] = comBuffer[i];
 				}
-				else //extra: pachet prea lung (lipseste '>')
+				else /// pachet prea lung (lipseste '>')
 				{
 					automateState = AUTOMAT_PACK_START;
 				}

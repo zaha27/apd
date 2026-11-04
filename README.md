@@ -1,6 +1,6 @@
 # APD – Laboratoare (LabWindows/CVI)
 
-Proiectele se compilează în **LabWindows/CVI pe Windows**. Liniile adăugate la rezolvarea temei sunt marcate cu `//extra:`.
+Proiectele se compilează în **LabWindows/CVI pe Windows**. Liniile adăugate la rezolvarea temei sunt marcate cu `///`.
 
 ## lab03 – Simulare achiziție semnale
 Fișiere: `AcquisitionSimulation.c/.h/.uir`, `Signals.c/.h`. Enunț: `docs/ApdL03-SignalGeneration.pdf`.

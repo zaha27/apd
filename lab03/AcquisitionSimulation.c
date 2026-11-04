@@ -27,7 +27,7 @@
 //==============================================================================
 // Static global variables
 static int mainPanel = 0;
-static int aboutPanel = 0; //extra: handle-ul panoului About (To do: 10)
+static int aboutPanel = 0; /// handle-ul panoului About (To do: 10)
 	//numarul de controale ce trebuiesc validate/invalidate
 static const int nControls = 9;
 	//controalele ce sunt validate/invalidate sunt puse intr-un vector
@@ -81,21 +81,21 @@ int main (int argc, char *argv[])
 	SetAxisScalingMode( mainPanel, MAIN_PANEL_IDC_GRAPH_DISPLAY, VAL_BOTTOM_XAXIS, VAL_MANUAL, 0.0, GRAPH_NPOINTS );
 	//To do: 10
 	//*********
-	errChk (aboutPanel = LoadPanel (0, "AcquisitionSimulation.uir", ABOUTPANEL)); //extra: incarc in memorie panoul About (nu il afisez inca)
+	errChk (aboutPanel = LoadPanel (0, "AcquisitionSimulation.uir", ABOUTPANEL)); /// incarc in memorie panoul About (nu il afisez inca)
 
 	/* display the panel and run the user interface */
 	errChk (DisplayPanel (mainPanel));
 
 	//To do: 01
 	//*********
-	//errChk (RunUserInterface ()); //extra: RunUserInterface este inlocuita de bucla de evenimente de mai jos
-	while( !quitFlag ) //extra: bucla de evenimente ruleaza pana cand se cere inchiderea aplicatiei
+	//errChk (RunUserInterface ()); /// RunUserInterface este inlocuita de bucla de evenimente de mai jos
+	while( !quitFlag ) /// bucla de evenimente ruleaza pana cand se cere inchiderea aplicatiei
 	{
-		event = GetUserEvent( 1, &val1, &val2 ); //extra: astept (wait = 1) un EVENT_COMMIT sau un eveniment postat cu QueueUserEvent
+		event = GetUserEvent( 1, &val1, &val2 ); /// astept (wait = 1) un EVENT_COMMIT sau un eveniment postat cu QueueUserEvent
 		switch( event )
 		{
-			case MYEVENT_CLOSE: //extra: s-a cerut inchiderea aplicatiei (X pe panel sau meniul Exit)
-				quitFlag = TRUE; //extra: setez flag-ul ca sa ies din bucla while
+			case MYEVENT_CLOSE: /// s-a cerut inchiderea aplicatiei (X pe panel sau meniul Exit)
+				quitFlag = TRUE; /// setez flag-ul ca sa ies din bucla while
 				break;
 		}
 	}
@@ -105,7 +105,7 @@ Error:
 	if (mainPanel > 0)
 		DiscardPanel (mainPanel);
 	if (aboutPanel > 0)
-		DiscardPanel (aboutPanel); //extra: il eliberez din memorie
+		DiscardPanel (aboutPanel); /// il eliberez din memorie
 	return 0;
 }
 
@@ -123,8 +123,8 @@ int CVICALLBACK MainPanelCB (int panel, int event, void *callbackData, int event
 		case EVENT_CLOSE:
 			//To do: 01
 			//*********
-			//QuitUserInterface(0); //extra: nu mai are efect, RunUserInterface a fost inlocuita de bucla while
-			QueueUserEvent( MYEVENT_CLOSE, panel, 0 ); //extra: postez evenimentul de inchidere, prins de GetUserEvent in main
+			//QuitUserInterface(0); /// nu mai are efect, RunUserInterface a fost inlocuita de bucla while
+			QueueUserEvent( MYEVENT_CLOSE, panel, 0 ); /// postez evenimentul de inchidere, prins de GetUserEvent in main
 			break;
 	}
 	return 0;
@@ -163,8 +163,8 @@ void CVICALLBACK OnMenuBar (int menuBar, int menuItem, void *callbackData, int p
 			//To do: 01
 			//*********
 
-			//QuitUserInterface(0); //extra: nu mai are efect, RunUserInterface a fost inlocuita de bucla while
-			QueueUserEvent( MYEVENT_CLOSE, panel, 0 ); //extra: postez evenimentul de inchidere, prins de GetUserEvent in main
+			//QuitUserInterface(0); /// nu mai are efect, RunUserInterface a fost inlocuita de bucla while
+			QueueUserEvent( MYEVENT_CLOSE, panel, 0 ); /// postez evenimentul de inchidere, prins de GetUserEvent in main
 			break;
 
 		case MENUBAR_SIGNAL_SINE:
@@ -172,7 +172,7 @@ void CVICALLBACK OnMenuBar (int menuBar, int menuItem, void *callbackData, int p
 
 			//To do: 02
 			//*********
-			signalType = SIGNALTYPE_SINEWAVE; //extra: retin in variabila globala ca semnalul selectat este sinus
+			signalType = SIGNALTYPE_SINEWAVE; /// retin in variabila globala ca semnalul selectat este sinus
 
 			break;
 
@@ -181,7 +181,7 @@ void CVICALLBACK OnMenuBar (int menuBar, int menuItem, void *callbackData, int p
 
 			//To do: 02
 			//*********
-			signalType = SIGNALTYPE_TRIANGLEWAVE; //extra: retin ca semnalul selectat este triunghi
+			signalType = SIGNALTYPE_TRIANGLEWAVE; /// retin ca semnalul selectat este triunghi
 
 			break;
 
@@ -190,7 +190,7 @@ void CVICALLBACK OnMenuBar (int menuBar, int menuItem, void *callbackData, int p
 
 			//To do: 02
 			//*********
-			signalType = SIGNALTYPE_SQUAREWAVE; //extra: retin ca semnalul selectat este dreptunghi
+			signalType = SIGNALTYPE_SQUAREWAVE; /// retin ca semnalul selectat este dreptunghi
 
 			break;
 
@@ -199,14 +199,14 @@ void CVICALLBACK OnMenuBar (int menuBar, int menuItem, void *callbackData, int p
 
 			//To do: 02
 			//*********
-			signalType = SIGNALTYPE_NOISE; //extra: retin ca semnalul selectat este zgomot alb
+			signalType = SIGNALTYPE_NOISE; /// retin ca semnalul selectat este zgomot alb
 
 			break;
 
 		case MENUBAR_ABOUT_ABOUT:
 			//To do: 10
 			//*********
-			InstallPopup( aboutPanel ); //extra: afisez panoul About ca popup (modal)
+			InstallPopup( aboutPanel ); /// afisez panoul About ca popup (modal)
 
 			break;
 	}
@@ -281,9 +281,9 @@ int CVICALLBACK AcquisitionModeCB (int panel, int control, int event,
 			//*********
 			if( val )
 			{
-				AcquisitionTimerPeriodCB( panel, MAIN_PANEL_IDC_SL_ACQ_PERIOD, EVENT_COMMIT, 0, 0, 0 ); //extra: setez perioada timerului dupa valoarea curenta a slider-ului
+				AcquisitionTimerPeriodCB( panel, MAIN_PANEL_IDC_SL_ACQ_PERIOD, EVENT_COMMIT, 0, 0, 0 ); /// setez perioada timerului dupa valoarea curenta a slider-ului
 			}
-			SetCtrlAttribute( panel, MAIN_PANEL_SIMULATION_TIMER, ATTR_ENABLED, val ); //extra: pornesc timerul in modul automat, il opresc in modul la cerere
+			SetCtrlAttribute( panel, MAIN_PANEL_SIMULATION_TIMER, ATTR_ENABLED, val ); /// pornesc timerul in modul automat, il opresc in modul la cerere
 
 			break;
 	}
@@ -295,12 +295,12 @@ int CVICALLBACK AcquisitionModeCB (int panel, int control, int event,
 *******************************************************************************/
 //To do: 10
 //*********
-int CVICALLBACK OnAboutPanelCB (int panel, int event, void *callbackData, int eventData1, int eventData2) //extra: callback-ul panoului About (declarat in AcquisitionSimulation.h)
+int CVICALLBACK OnAboutPanelCB (int panel, int event, void *callbackData, int eventData1, int eventData2) /// callback-ul panoului About (declarat in AcquisitionSimulation.h)
 {
 	switch( event )
 	{
 		case EVENT_CLOSE:
-			RemovePopup( 0 ); //extra: indepartez popup-ul de pe ecran (0 = panoul ramane incarcat in memorie)
+			RemovePopup( 0 ); /// indepartez popup-ul de pe ecran (0 = panoul ramane incarcat in memorie)
 			break;
 	}
 	return 0;

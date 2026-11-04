@@ -97,7 +97,7 @@ BOOL OpenCloseComInPort(void)
 			//deschid portu serial
 		// err = OpenComConfig( /*de completat*/ );									  
 		err = OpenComConfig(comInPort, comName, comInBaudRate, comInParityBits, comInDataBits,
-						   comInStopBits, comInQInSize, comInQOutSize); //extra: ultimul parametru corectat: dimensiunea cozii de iesire (era pus de doua ori QInSize)
+						   comInStopBits, comInQInSize, comInQOutSize); /// ultimul parametru corectat: dimensiunea cozii de iesire (era pus de doua ori QInSize)
 		
 		//verifi daca s-a deschis cu succes
 		if( err >= 0 )

@@ -162,7 +162,7 @@ void CVICALLBACK OnMainMenubarCB (int menuBar, int menuItem, void *callbackData,
 
 			break;
 		case  MENUBAR_FILE_EXIT:
-			QuitUserInterface (0); //extra: inchid aplicatia (portul serial se inchide in main, dupa RunUserInterface)
+			QuitUserInterface (0); /// inchid aplicatia (portul serial se inchide in main, dupa RunUserInterface)
 			break;
 		case  MENUBAR_SETTINGS_COM_IN_OPEN:
 			handleOnImage = OpenFile("LedOn.bmp", VAL_READ_ONLY, VAL_OPEN_AS_IS, VAL_BINARY );
@@ -199,7 +199,7 @@ int CVICALLBACK OnButtonSend (int panel, int control, int event,
 				SetCtrlVal( panel, MAIN_PANEL_IDC_TXT_TOSEND, "" );
 					//scriu pe seriala textul respectiv
 			//	ComWrt( /*de completat*/);
-				ComWrt( comInPort, string, strlen( string ) ); //extra: scriu pe portul serial deschis toate caracterele textului
+				ComWrt( comInPort, string, strlen( string ) ); /// scriu pe portul serial deschis toate caracterele textului
 			}
 			else
 			{
