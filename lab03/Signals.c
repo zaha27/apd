@@ -60,20 +60,20 @@ int CVICALLBACK ManualAcquisitionCB (int panel, int control, int event,
 			//To do: 02
 			//*********
 			switch( signalType ) //extra: generez semnalul in functie de tipul selectat din meniul Semnal
-			{ //extra: inceputul switch-ului
-				case SIGNALTYPE_SINEWAVE: //extra: semnal sinusoidal
+			{
+				case SIGNALTYPE_SINEWAVE:
 					SineWave( GRAPH_NPOINTS, amplitude, frequency, &phase, rowSignal ); //extra: genereaza GRAPH_NPOINTS esantioane; phase se actualizeaza ca semnalul sa continue la urmatoarea achizitie
-					break; //extra: ies din switch
-				case SIGNALTYPE_TRIANGLEWAVE: //extra: semnal triunghiular
+					break;
+				case SIGNALTYPE_TRIANGLEWAVE:
 					TriangleWave( GRAPH_NPOINTS, amplitude, frequency, &phase, rowSignal ); //extra: genereaza semnalul triunghiular in rowSignal
-					break; //extra: ies din switch
-				case SIGNALTYPE_SQUAREWAVE: //extra: semnal dreptunghiular
+					break;
+				case SIGNALTYPE_SQUAREWAVE:
 					SquareWave( GRAPH_NPOINTS, amplitude, frequency, &phase, dutyCycle, rowSignal ); //extra: genereaza semnalul dreptunghiular cu factorul de umplere dutyCycle
-					break; //extra: ies din switch
-				case SIGNALTYPE_NOISE: //extra: zgomot alb
+					break;
+				case SIGNALTYPE_NOISE:
 					WhiteNoise( GRAPH_NPOINTS, amplitude, -1, rowSignal ); //extra: seed negativ = alt zgomot la fiecare apel
-					break; //extra: ies din switch
-			} //extra: sfarsitul switch-ului
+					break;
+			}
 			
 			break;
 	}
@@ -89,7 +89,7 @@ int CVICALLBACK ManualDisplayCB (int panel, int control, int event,
 	double maxVal = 0.0;
 	double minVal = 0.0;
 	ssize_t maxIndex = 0; //extra: ssize_t (nu int) pentru ca MaxMin1D cere ssize_t* (corect si pe 32, si pe 64 de biti)
-	ssize_t minIndex = 0; //extra: idem pentru indexul minimului
+	ssize_t minIndex = 0;
 	double mean = 0.0;
 	static int count = 0;
 	char string[ MAX_PATHNAME_LEN ] = { 0 };
@@ -99,25 +99,25 @@ int CVICALLBACK ManualDisplayCB (int panel, int control, int event,
 		case EVENT_COMMIT:
 			//To do: 03
 			//*********
-			if( plotHandle != NO_PLOT ) //extra: daca exista deja un plot pe graf
-			{ //extra: inceput bloc
+			if( plotHandle != NO_PLOT )
+			{
 				DeleteGraphPlot( panel, MAIN_PANEL_IDC_GRAPH_DISPLAY, plotHandle, VAL_DELAYED_DRAW ); //extra: sterg plotul anterior folosind handle-ul lui
-			} //extra: sfarsit bloc
+			}
 			plotHandle = PlotY( panel, MAIN_PANEL_IDC_GRAPH_DISPLAY, rowSignal, GRAPH_NPOINTS, VAL_DOUBLE,
 							    VAL_THIN_LINE, VAL_EMPTY_SQUARE, VAL_SOLID, 1, traceColor ); //extra: desenez semnalul cu culoarea de trasare curenta si retin handle-ul plotului
 			MaxMin1D( rowSignal, GRAPH_NPOINTS, &maxVal, &maxIndex, &minVal, &minIndex ); //extra: calculez maximul si minimul semnalului (si pozitiile lor)
-			Mean( rowSignal, GRAPH_NPOINTS, &mean ); //extra: calculez media semnalului
-			SetCtrlVal( panel, MAIN_PANEL_IDC_NUM_MIN, minVal ); //extra: afisez minimul
-			SetCtrlVal( panel, MAIN_PANEL_IDC_NUM_MAX, maxVal ); //extra: afisez maximul
-			SetCtrlVal( panel, MAIN_PANEL_IDC_NUM_MEAN, mean ); //extra: afisez media
+			Mean( rowSignal, GRAPH_NPOINTS, &mean ); //extra: calculez media; apoi afisez minimul, maximul si media
+			SetCtrlVal( panel, MAIN_PANEL_IDC_NUM_MIN, minVal );
+			SetCtrlVal( panel, MAIN_PANEL_IDC_NUM_MAX, maxVal );
+			SetCtrlVal( panel, MAIN_PANEL_IDC_NUM_MEAN, mean );
 			
 			//To do: 08
 			//*********
 			if( saveFlag ) //extra: daca butonul Salvare este apasat
-			{ //extra: inceput bloc
+			{
 				ArrayToFile( fileName, rowSignal, VAL_DOUBLE, GRAPH_NPOINTS, 1, VAL_GROUPS_TOGETHER,
 							 VAL_GROUPS_AS_COLUMNS, VAL_SEP_BY_TAB, 10, VAL_ASCII, VAL_TRUNCATE ); //extra: scriu in fisier semnalul afisat (o valoare pe linie, text)
-			} //extra: sfarsit bloc
+			}
 			
 			//To do: 06
 			//*********
@@ -141,16 +141,16 @@ int CVICALLBACK SampleCB (int panel, int control, int event,
 		case EVENT_COMMIT:
 			//To do: 07
 			//*********
-			GetCtrlVal( panel, control, &val ); //extra: citesc indexul introdus in controlul Esantion
-			if( val < 0 ) //extra: protectie la index negativ
-			{ //extra: inceput bloc
-				val = 0; //extra: limitez la primul esantion
-			} //extra: sfarsit bloc
-			if( val > GRAPH_NPOINTS - 1 ) //extra: protectie la index mai mare decat numarul de puncte
-			{ //extra: inceput bloc
-				val = GRAPH_NPOINTS - 1; //extra: limitez la ultimul esantion
-			} //extra: sfarsit bloc
-			SetCtrlVal( panel, control, val ); //extra: rescriu valoarea (eventual limitata) in control
+			GetCtrlVal( panel, control, &val ); //extra: citesc indexul introdus in Esantion (mai jos il limitez la 0..GRAPH_NPOINTS-1)
+			if( val < 0 )
+			{
+				val = 0;
+			}
+			if( val > GRAPH_NPOINTS - 1 )
+			{
+				val = GRAPH_NPOINTS - 1;
+			}
+			SetCtrlVal( panel, control, val );
 			SetGraphCursor( panel, MAIN_PANEL_IDC_GRAPH_DISPLAY, 1, val, rowSignal[ (int)val ] ); //extra: mut cursorul 1 pe esantionul cerut
 			SetCtrlVal( panel, MAIN_PANEL_IDC_NUM_SAMPLE_VALUE, rowSignal[ (int)val ] ); //extra: afisez valoarea esantionului
 
@@ -172,19 +172,19 @@ int CVICALLBACK OnChooseColorCB (int panel, int control, int event,
 		case EVENT_COMMIT:
 			//To do: 05
 			//*********
-			GetCtrlVal( panel, control, &val ); //extra: citesc culoarea aleasa
+			GetCtrlVal( panel, control, &val );
 			if( control == MAIN_PANEL_IDC_COLOR_CURSOR ) //extra: s-a schimbat culoarea cursorului
-			{ //extra: inceput bloc
+			{
 				SetCursorAttribute( panel, MAIN_PANEL_IDC_GRAPH_DISPLAY, 1, ATTR_CURSOR_COLOR, val ); //extra: aplic culoarea pe cursorul 1 al grafului
-			} //extra: sfarsit bloc
+			}
 			else if( control == MAIN_PANEL_IDC_COLOR_TRACE ) //extra: s-a schimbat culoarea de trasare
-			{ //extra: inceput bloc
+			{
 				traceColor = val; //extra: retin culoarea, ca urmatoarele PlotY sa o foloseasca
-				if( plotHandle != NO_PLOT ) //extra: daca exista deja un semnal desenat
-				{ //extra: inceput bloc
+				if( plotHandle != NO_PLOT )
+				{
 					SetPlotAttribute( panel, MAIN_PANEL_IDC_GRAPH_DISPLAY, plotHandle, ATTR_TRACE_COLOR, traceColor ); //extra: schimb culoarea plotului existent
-				} //extra: sfarsit bloc
-			} //extra: sfarsit bloc
+				}
+			}
 
 			break;
 	}
@@ -217,32 +217,32 @@ int CVICALLBACK FileIoCB (int panel, int control, int event,
 					//To do: 08
 					//*********
 					if( val ) //extra: butonul Salvare a fost apasat (1)
-					{ //extra: inceput bloc
-						GetSystemDate( &month, &day, &year ); //extra: citesc data curenta
-						GetSystemTime( &hour, &minute, &second ); //extra: citesc ora curenta
+					{
+						GetSystemDate( &month, &day, &year ); //extra: citesc data si ora curenta pentru numele fisierului
+						GetSystemTime( &hour, &minute, &second );
 						sprintf( path, "RowSignal_%04d.%02d.%02d_%02d-%02d-%02d.dat",
 								 year, month, day, hour, minute, second ); //extra: construiesc numele RowSignal_aaaa.ll.zz_hh-mm-ss.dat
 						if( FileSelectPopup( "", path, "*.dat", "Salvare semnal", VAL_SAVE_BUTTON,
-											 0, 1, 1, 1, fileName ) == VAL_NO_FILE_SELECTED ) //extra: utilizatorul alege locul fisierului (numele propus e cel construit)
-						{ //extra: nu s-a selectat niciun fisier (Cancel)
-							SetCtrlVal( panel, control, 0 ); //extra: ridic la loc butonul Salvare
-							saveFlag = FALSE; //extra: nu salvez nimic
-							break; //extra: continui aplicatia in siguranta
-						} //extra: sfarsit bloc
+											 0, 1, 1, 1, fileName ) == VAL_NO_FILE_SELECTED ) //extra: utilizatorul alege unde salveaza; la Cancel ridic butonul si nu salvez nimic
+						{
+							SetCtrlVal( panel, control, 0 );
+							saveFlag = FALSE;
+							break;
+						}
 						saveFlag = TRUE; //extra: memorez ca butonul este apasat
 						SetCtrlAttribute( panel, MAIN_PANEL_IDC_BTT_FILELOAD, ATTR_DIMMED, 1 ); //extra: dezactivez Incarca cat timp salvez
-						if( plotHandle != NO_PLOT ) //extra: daca exista un semnal afisat
-						{ //extra: inceput bloc
+						if( plotHandle != NO_PLOT )
+						{
 							ArrayToFile( fileName, rowSignal, VAL_DOUBLE, GRAPH_NPOINTS, 1, VAL_GROUPS_TOGETHER,
 										 VAL_GROUPS_AS_COLUMNS, VAL_SEP_BY_TAB, 10, VAL_ASCII, VAL_TRUNCATE ); //extra: scriu semnalul afisat in fisier
-						} //extra: sfarsit bloc
-					} //extra: sfarsit bloc
+						}
+					}
 					else //extra: butonul Salvare a fost ridicat (0)
-					{ //extra: inceput bloc
-						saveFlag = FALSE; //extra: memorez ca butonul este ridicat
-						GetCtrlVal( panel, MAIN_PANEL_IDC_SW_ACQMODE, &acqMode ); //extra: verific modul de achizitie
+					{
+						saveFlag = FALSE;
+						GetCtrlVal( panel, MAIN_PANEL_IDC_SW_ACQMODE, &acqMode );
 						SetCtrlAttribute( panel, MAIN_PANEL_IDC_BTT_FILELOAD, ATTR_DIMMED, acqMode ); //extra: reactivez Incarca doar in modul la cerere
-					} //extra: sfarsit bloc
+					}
 
 					break;
 				
@@ -251,15 +251,15 @@ int CVICALLBACK FileIoCB (int panel, int control, int event,
 					//*********
 					if( FileSelectPopup( "", "*.dat", "*.dat", "Incarcare semnal", VAL_LOAD_BUTTON,
 										 0, 0, 1, 0, path ) == VAL_NO_FILE_SELECTED ) //extra: utilizatorul alege fisierul de incarcat
-					{ //extra: nu s-a selectat niciun fisier (Cancel)
-						break; //extra: continui aplicatia in siguranta, fara sa modific semnalul
-					} //extra: sfarsit bloc
+					{
+						break;
+					}
 					if( FileToArray( path, rowSignal, VAL_DOUBLE, GRAPH_NPOINTS, 1, VAL_GROUPS_TOGETHER,
 									 VAL_GROUPS_AS_COLUMNS, VAL_ASCII ) < 0 ) //extra: citesc semnalul din fisier in rowSignal
-					{ //extra: citirea a esuat (fisier gresit sau corupt)
-						MessagePopup( "Eroare", "Fisierul selectat nu a putut fi citit!" ); //extra: anunt utilizatorul
-						break; //extra: continui aplicatia in siguranta
-					} //extra: sfarsit bloc
+					{
+						MessagePopup( "Eroare", "Fisierul selectat nu a putut fi citit!" );
+						break;
+					}
 					ManualDisplayCB( panel, MAIN_PANEL_IDC_BTT_MANUALDISPLAY, EVENT_COMMIT, 0, 0, 0 ); //extra: afisez semnalul incarcat (plot cu culoarea curenta, min/max/medie, cursor)
 
 					break;
@@ -283,15 +283,15 @@ int CVICALLBACK GraphDisplayCB (int panel, int control, int event,
 		case EVENT_COMMIT:
 			//To do: 06
 			//*********
-			GetGraphCursor( panel, MAIN_PANEL_IDC_GRAPH_DISPLAY, 1, &x, &y ); //extra: citesc pozitia cursorului 1
-			if( x < 0 ) //extra: protectie: cursorul in stanga primului esantion
-			{ //extra: inceput bloc
-				x = 0; //extra: limitez la primul esantion
-			} //extra: sfarsit bloc
-			if( x > GRAPH_NPOINTS - 1 ) //extra: protectie: cursorul dupa ultimul esantion
-			{ //extra: inceput bloc
-				x = GRAPH_NPOINTS - 1; //extra: limitez la ultimul esantion
-			} //extra: sfarsit bloc
+			GetGraphCursor( panel, MAIN_PANEL_IDC_GRAPH_DISPLAY, 1, &x, &y ); //extra: citesc pozitia cursorului 1 (mai jos o limitez la 0..GRAPH_NPOINTS-1)
+			if( x < 0 )
+			{
+				x = 0;
+			}
+			if( x > GRAPH_NPOINTS - 1 )
+			{
+				x = GRAPH_NPOINTS - 1;
+			}
 			SetCtrlVal( panel, MAIN_PANEL_IDC_NUM_SAMPLE_INDEX, (double)(int)(x + 0.5) ); //extra: afisez indexul esantionului (rotunjit)
 			SetCtrlVal( panel, MAIN_PANEL_IDC_NUM_SAMPLE_VALUE, rowSignal[ (int)(x + 0.5) ] ); //extra: afisez valoarea esantionului din semnal
 

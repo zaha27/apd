@@ -78,7 +78,7 @@ int ProcessComInBuffer( char *comBuffer, int comBufferLength )
 				
 				if (comBuffer[i] == PACK_BEGING) //extra: am gasit inceputul unui pachet '<'
 				{
-					packIndex = 0; //extra: incep un pachet nou in bufferul static
+					packIndex = 0;
 					automateState = AUTOMAT_PACK_DATA;
 				}
 
@@ -87,14 +87,14 @@ int ProcessComInBuffer( char *comBuffer, int comBufferLength )
 				
 				//...
 				if (comBuffer[i] == PACK_END) //extra: am gasit sfarsitul pachetului '>' (poate veni intr-o citire ulterioara, starea se pastreaza intre apeluri)
-				{ //extra: pachetul este complet
-					pack[packIndex] = '\0'; //extra: termin sirul cu continutul pachetului ("val1 val2 val3")
-					automateState = AUTOMAT_PACK_START; //extra: astept urmatorul pachet
+				{
+					pack[packIndex] = '\0';
+					automateState = AUTOMAT_PACK_START;
 					
 					if (sscanf(pack, "%d %d %d", &iCh[0], &iCh[1], &iCh[2]) != 3) //extra: extrag cele 3 valori; verific ca s-au citit toate
-					{ //extra: pachet invalid
-						break; //extra: il ignor, ca sa nu desenez/procesez valori gresite
-					} //extra: sfarsit bloc
+					{
+						break;
+					}
 					
 					PlotStripChartPoint( mainPanel, MAIN_PANEL_IDC_DISP_ECG1, (double)iCh[0] ); //*
 					PlotStripChartPoint( mainPanel, MAIN_PANEL_IDC_DISP_ECG2, (double)iCh[1] ); //*
@@ -139,19 +139,19 @@ int ProcessComInBuffer( char *comBuffer, int comBufferLength )
 						// Afisarea valorii frecventei cardiace
 						SetCtrlVal( mainPanel, MAIN_PANEL_NUMERIC_3, heart_rate ); //extra: afisez numeric frecventa cardiaca
 					}
-				} //extra: sfarsit pachet complet
+				}
 				else if (comBuffer[i] == PACK_BEGING) //extra: a aparut '<' inainte de '>' (pachet stricat)
-				{ //extra: inceput bloc
-					packIndex = 0; //extra: renunt la pachetul stricat si incep unul nou
-				} //extra: sfarsit bloc
+				{
+					packIndex = 0;
+				}
 				else if (packIndex < sizeof(pack) - 1) //extra: caracter din interiorul pachetului si mai e loc in buffer
-				{ //extra: inceput bloc
-					pack[packIndex++] = comBuffer[i]; //extra: il adaug in bufferul pachetului
-				} //extra: sfarsit bloc
+				{
+					pack[packIndex++] = comBuffer[i];
+				}
 				else //extra: pachet prea lung (lipseste '>')
-				{ //extra: inceput bloc
-					automateState = AUTOMAT_PACK_START; //extra: il arunc si caut urmatorul '<'
-				} //extra: sfarsit bloc
+				{
+					automateState = AUTOMAT_PACK_START;
+				}
 				
 				break;
 		}

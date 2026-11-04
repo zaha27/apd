@@ -90,21 +90,21 @@ int main (int argc, char *argv[])
 	//*********
 	//errChk (RunUserInterface ()); //extra: RunUserInterface este inlocuita de bucla de evenimente de mai jos
 	while( !quitFlag ) //extra: bucla de evenimente ruleaza pana cand se cere inchiderea aplicatiei
-	{ //extra: inceputul buclei de evenimente
+	{
 		event = GetUserEvent( 1, &val1, &val2 ); //extra: astept (wait = 1) un EVENT_COMMIT sau un eveniment postat cu QueueUserEvent
-		switch( event ) //extra: decid in functie de evenimentul primit
-		{ //extra: inceputul switch-ului
+		switch( event )
+		{
 			case MYEVENT_CLOSE: //extra: s-a cerut inchiderea aplicatiei (X pe panel sau meniul Exit)
 				quitFlag = TRUE; //extra: setez flag-ul ca sa ies din bucla while
-				break; //extra: ies din switch
-		} //extra: sfarsitul switch-ului
-	} //extra: sfarsitul buclei de evenimente
+				break;
+		}
+	}
 
 Error:
 	/* clean up */
 	if (mainPanel > 0)
 		DiscardPanel (mainPanel);
-	if (aboutPanel > 0) //extra: daca panoul About a fost incarcat
+	if (aboutPanel > 0)
 		DiscardPanel (aboutPanel); //extra: il eliberez din memorie
 	return 0;
 }
@@ -279,10 +279,10 @@ int CVICALLBACK AcquisitionModeCB (int panel, int control, int event,
 			SetCtrlAttribute( panel, MAIN_PANEL_IDC_BTT_FILELOAD, ATTR_DIMMED, val ); 
 			//To do: 04
 			//*********
-			if( val ) //extra: daca switch-ul este pe Automat
-			{ //extra: inceput bloc
+			if( val )
+			{
 				AcquisitionTimerPeriodCB( panel, MAIN_PANEL_IDC_SL_ACQ_PERIOD, EVENT_COMMIT, 0, 0, 0 ); //extra: setez perioada timerului dupa valoarea curenta a slider-ului
-			} //extra: sfarsit bloc
+			}
 			SetCtrlAttribute( panel, MAIN_PANEL_SIMULATION_TIMER, ATTR_ENABLED, val ); //extra: pornesc timerul in modul automat, il opresc in modul la cerere
 
 			break;
@@ -296,15 +296,15 @@ int CVICALLBACK AcquisitionModeCB (int panel, int control, int event,
 //To do: 10
 //*********
 int CVICALLBACK OnAboutPanelCB (int panel, int event, void *callbackData, int eventData1, int eventData2) //extra: callback-ul panoului About (declarat in AcquisitionSimulation.h)
-{ //extra: inceputul functiei
-	switch( event ) //extra: verific evenimentul primit de panou
-	{ //extra: inceputul switch-ului
-		case EVENT_CLOSE: //extra: utilizatorul a apasat X pe panoul About
+{
+	switch( event )
+	{
+		case EVENT_CLOSE:
 			RemovePopup( 0 ); //extra: indepartez popup-ul de pe ecran (0 = panoul ramane incarcat in memorie)
-			break; //extra: ies din switch
-	} //extra: sfarsitul switch-ului
-	return 0; //extra: valoarea de retur standard a unui callback CVI
-} //extra: sfarsitul functiei
+			break;
+	}
+	return 0;
+}
 
 /*******************************************************************************
 	functia de check si uncheck pentru meniu signal
